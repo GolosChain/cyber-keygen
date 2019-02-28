@@ -1,6 +1,7 @@
+.idea
+.npmrc
 node_modules
 npm-debug.log
 coverage
 dist
 lib
-.idea
