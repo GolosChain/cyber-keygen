@@ -66,7 +66,7 @@ function generateMasterKeys(masterPrivateKey = null) {
 
 function toPublicKey(privateObj) {
   const publicKey = privateObj.toPublic().toString();
-  return publicKey.replace(/EOS/, 'GLS');
+  return publicKey.replace('EOS', 'GLS');
 }
 
 /** @typedef {Object<keyPath, auth>} keyPathAuth */
