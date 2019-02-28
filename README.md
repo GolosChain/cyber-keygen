@@ -50,7 +50,7 @@ Use Node v8+ (updates `package-lock.json`)
 # Browser
 
 ```bash
-git clone https://github.com/EOSIO/cyber-keygen.git
+git clone https://github.com/GolosChain/cyber-keygen.git
 cd cyber-keygen
 npm install
 npm run build

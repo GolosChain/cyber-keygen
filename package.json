@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EOSIO/cyber-keygen.git"
+    "url": "git+https://github.com/GolosChain/cyber-keygen.git"
   },
   "keywords": [
     "EOS",
@@ -28,9 +28,9 @@
   "author": "jamesc",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/EOSIO/cyber-keygen/issues"
+    "url": "https://github.com/GolosChain/cyber-keygen/issues"
   },
-  "homepage": "https://github.com/EOSIO/cyber-keygen#readme",
+  "homepage": "https://github.com/GolosChain/cyber-keygen#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
