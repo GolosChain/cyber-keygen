@@ -1,9 +1,9 @@
 /** @module Keygen */
 
-const assert = require("assert");
+const assert = require('assert');
 
-const { PrivateKey } = require("eosjs-ecc");
-const validate = require("./validate");
+const { PrivateKey } = require('eosjs-ecc');
+const validate = require('./validate');
 
 module.exports = {
   generateMasterKeys,
@@ -36,15 +36,15 @@ function generateMasterKeys(masterPrivateKey = null) {
   if (masterPrivateKey == null) {
     master = PrivateKey.randomKey();
   } else {
-    assert(validate.isMasterKey(masterPrivateKey), "masterPrivateKey");
-    master = PrivateKey(masterPrivateKey.substring("PW".length));
+    assert(validate.isMasterKey(masterPrivateKey), 'masterPrivateKey');
+    master = PrivateKey(masterPrivateKey.substring('PW'.length));
   }
 
   return Promise.resolve(master).then(master => {
-    const ownerPrivate = master.getChildKey("owner");
-    const activePrivate = ownerPrivate.getChildKey("active");
-    const postingPrivate = activePrivate.getChildKey("posting");
-    const memoPrivate = activePrivate.getChildKey("memo");
+    const ownerPrivate = master.getChildKey('owner');
+    const activePrivate = ownerPrivate.getChildKey('active');
+    const postingPrivate = activePrivate.getChildKey('posting');
+    const memoPrivate = activePrivate.getChildKey('memo');
 
     return {
       masterPrivateKey: `PW${master.toWif()}`,
@@ -55,13 +55,18 @@ function generateMasterKeys(masterPrivateKey = null) {
         memo: memoPrivate.toWif()
       },
       publicKeys: {
-        owner: ownerPrivate.toPublic().toString(),
-        active: activePrivate.toPublic().toString(),
-        posting: postingPrivate.toPublic().toString(),
-        memo: memoPrivate.toPublic().toString()
+        owner: toPublicKey(ownerPrivate),
+        active: toPublicKey(activePrivate),
+        posting: toPublicKey(postingPrivate),
+        memo: toPublicKey(memoPrivate),
       }
     };
   });
+}
+
+function toPublicKey(privateObj) {
+  const publicKey = privateObj.toPublic().toString();
+  return publicKey.replace(/EOS/, 'GLS');
 }
 
 /** @typedef {Object<keyPath, auth>} keyPathAuth */
@@ -77,12 +82,12 @@ function generateMasterKeys(masterPrivateKey = null) {
   @return {object<keyPathAuth>}
 */
 function authsByPath(accountPermissions) {
-  assert(Array.isArray(accountPermissions), "accountPermissions is an array");
+  assert(Array.isArray(accountPermissions), 'accountPermissions is an array');
   accountPermissions.forEach(perm =>
     assert.equal(
       typeof perm,
-      "object",
-      "accountPermissions is an array of objects"
+      'object',
+      'accountPermissions is an array of objects'
     )
   );
 
@@ -102,22 +107,22 @@ function authsByPath(accountPermissions) {
 
   const auths = {};
   accountPermissions.forEach(perm => {
-    if (perm.parent === "") {
+    if (perm.parent === '') {
       auths[perm.perm_name] = perm.required_auth;
     } else {
       let pathStr = parentPath(perm)
         .reverse()
-        .join("/");
-      if (pathStr.charAt(0) === "/") {
+        .join('/');
+      if (pathStr.charAt(0) === '/') {
         pathStr = pathStr.substring(1);
       }
       pathStr = `${pathStr}/${perm.perm_name}`;
-      if (pathStr.indexOf("owner/active/") === 0) {
+      if (pathStr.indexOf('owner/active/') === 0) {
         // active is always a child of owner
-        pathStr = pathStr.substring("owner/".length);
-      } else if (pathStr === "owner/active") {
+        pathStr = pathStr.substring('owner/'.length);
+      } else if (pathStr === 'owner/active') {
         // owner is implied, juse use active
-        pathStr = "active";
+        pathStr = 'active';
       }
       auths[pathStr] = perm.required_auth;
     }
@@ -136,7 +141,7 @@ function authsByPath(accountPermissions) {
 */
 function deriveKeys(path, wifsByPath) {
   validate.path(path);
-  assert.equal(typeof wifsByPath, "object", "wifsByPath");
+  assert.equal(typeof wifsByPath, 'object', 'wifsByPath');
 
   if (wifsByPath[path]) {
     return [];
@@ -162,11 +167,11 @@ function deriveKeys(path, wifsByPath) {
   const newKeys = [];
   let extendedPath = bestPath;
   const wif = wifsByPath[bestPath];
-  assert(!!wif, "wif");
+  assert(!!wif, 'wif');
   let extendedPrivate = PrivateKey(wif);
   for (const extend of path
-    .substring(bestPath.length + "/".length)
-    .split("/")) {
+    .substring(bestPath.length + '/'.length)
+    .split('/')) {
     extendedPrivate = extendedPrivate.getChildKey(extend);
     extendedPath += `/${extend}`;
     newKeys.push({
